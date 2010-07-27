@@ -36,7 +36,7 @@ public class Main
 
             // why do I need to set the following two in addition to the typed arguments in the Mapper?
             job.setMapOutputKeyClass(Text.class);
-            job.setMapOutputValueClass(LongWritable.class);
+            job.setMapOutputValueClass(Text.class);
 
             job.setReducerClass(MyReducer.class);
             job.waitForCompletion(true);
