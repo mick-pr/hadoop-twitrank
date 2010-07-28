@@ -28,21 +28,19 @@ public class MyMapper extends Mapper<LongWritable, Text, Text, Text>
         if(tweet.getText()!=null){
             String text = tweet.getTruncated() ? tweet.getRetweeted_status().getText() : tweet.getText();
 
-            long retweets = (tweet.getRetweeted_status()!=null) ? 1L : 0L;
-            long followers = tweet.getUser().getFollowers_count();
-            String language = tweet.getUser().getLang();
-
             Matcher matcher = patt.matcher(text);
             while(matcher.find()){
                 String url = matcher.group();
-                context.write(new Text(url), new Text(retweets+","+followers+","+language));
+
+                MapOutputValue output = new MapOutputValue();
+                output.setFollowers(tweet.getUser().getFollowers_count());
+                output.setRetweet(tweet.getRetweeted_status()!=null);
+                output.setText(text);
+                output.setLanguage(tweet.getUser().getLang());
+
+                context.write(new Text("["+tweet.getUser().getLang()+"]"+url), new Text(mapper.writeValueAsString(output)));
             }
         }
-
-
-
-
-
     }
 
 }
